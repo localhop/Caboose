@@ -4,19 +4,21 @@
  * This backend server handles API calls from the localhop Android app
  */
 
+"use strict";
+
 if (process.argv.length < 5) {
-    console.log("server.js <username> <password> <database>");
-    process.exit(1);
+  console.log("server.js <username> <password> <database>");
+  process.exit(1);
 }
 
-var express    = require('express'),
-		app        = express(),
-    mysql      = require('mysql'),
+var express  = require('express'),
+		app    = express(),
+    mysql    = require('mysql'),
     bodyParser = require('body-parser'); // for POST 
 
 var connectionpool = mysql.createPool({
-	host     : 'localhost',
-	user     : process.argv[2],
+	host   : 'localhost',
+	user   : process.argv[2],
 	password : process.argv[3],
 	database : process.argv[4],
 });
@@ -31,34 +33,32 @@ app.set('port', 3000);
 /// Utility functions
 ///////////////////////////////////////////////////////////////////////////////
 
-function _logError(e) {
-    console.error('x error:', e);
-}
+function _error(e) { console.error('x error:', e); }
 
-function _logWarning(w) {
-    console.error('! warning:', w);
-}
+function _warning(w) { console.error('! warning:', w); }
+
+function _debug(m) { console.log('> debug: ', m); }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
 ///////////////////////////////////////////////////////////////////////////////
 
 function handleMysqlConnErr(err, res) {
-    _logError(err);
-    res.statusCode = 503;
-    res.send({
-        text: '',
-        error: err
-    });
+  _error(err);
+  res.statusCode = 503;
+  res.send({
+    text: '',
+    error: err
+  });
 }
 
 function handleMysqlQueryErr(err, res) {
-    _logError(err);
-    res.statusCode = 500;
-    res.send({
-        text: '',
-        error: err
-    });
+  _error(err);
+  res.statusCode = 500;
+  res.send({
+    text: '',
+    error: err
+  });
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,57 +71,46 @@ app.get('/', function(req, res){
 });
 
 app.get('/:nodeTest.js', function (req, res) {
-        res.status(200);
-        res.sendFile(__dirname + "/nodeTest.js")
+    res.status(200);
+    res.sendFile(__dirname + "/nodeTest.js")
 });
 
 app.get('/get/user/events/:userid', function(req, res) {
-    connectionpool.getConnection( function (err, connection) {
+  connectionpool.getConnection(function (err, connection) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      qstr = "call getUserEvents(?);";
+      args = [req.params.userid];
+      connection.query(qstr, args, function(err, rows, fields) {
+      	connection.release();
         if (err) {
-            handleMysqlConnErr(err, res);
+          handleMysqlQueryErr(err, res);
         } else {
-            qstr = "call getUserEvents(?);";
-            args = [req.params.userid];
-            connection.query(qstr, args, function(err, rows, fields) {
-                if (err) {
-                    handleMysqlQueryErr(err, res);
-                    return;
-                }
-                res.send({
-                    text: rows[0],
-                    error: ''
-                });
-                connection.release();
-            });
-        }
-    });
+	        res.send({text: rows[0], error: ''});
+	      }
+      });
+    }
+  });
 });
 
 app.get('/create/user/group/:userid/:group', function (req, res) {
-    connectionpool.getConnection( function (err, connection) {
+  connectionpool.getConnection(function (err, connection) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      qstr = "call createUserGroup(?,?);";
+      args = [req.params.userid, req.params.group];
+      connection.query(qstr, args, function(err, rows, fields) {
+      	connection.release();
         if (err) {
-            handleMysqlConnErr(err, res);
+          handleMysqlQueryErr(err, res);
         } else {
-            qstr = "call createUserGroup(?,?);";
-            args = [req.params.userid, req.params.group];
-            connection.query(qstr, args, function(err, rows, fields) {
-                if (err) {
-                    handleMysqlQueryErr(err, res);
-                    return;
-                }
-                res.send({
-                    text: rows[0],
-                    error: ''
-                    // result: 'success',
-                    // err:    '',
-                
-                    // json:   rows,
-                    // length: rows.length
-                });
-                connection.release();
-            });
-        }
-    });
+	        res.send({text: rows[0], error: ''});
+	      }
+      });
+    }
+  });
 });
 
 app.listen(app.get('port'));
