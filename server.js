@@ -24,9 +24,9 @@ var express    = require('express'),
 
 app.set('port', 3000);
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/', function(req, res, next) {
-	res.type('json'); // This server returns only JSON requests
-});
+// app.use('/', function(req, res, next) {
+// 	res.type('json'); // This server returns only JSON requests
+// });
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Utility functions
