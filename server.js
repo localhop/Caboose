@@ -73,8 +73,8 @@ app.get('/get/user/events/:userid', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      qstr = "call getUserEvents(?);";
-      args = [req.params.userid];
+      var qstr = "call getUserEvents(?);";
+      var args = [req.params.userid];
       conn.query(qstr, args, function(err, rows, fields) {
       	conn.release();
         if (err) {
@@ -92,8 +92,8 @@ app.get('/create/user/group/:userid/:group', function (req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      qstr = "call createUserGroup(?,?);";
-      args = [req.params.userid, req.params.group];
+      var qstr = "call createUserGroup(?,?);";
+      var args = [req.params.userid, req.params.group];
       conn.query(qstr, args, function(err, rows, fields) {
       	conn.release();
         if (err) {
