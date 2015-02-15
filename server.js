@@ -1,7 +1,7 @@
 /** 
  * Local Hop - Backend server "Caboose"
  * 
- * This backend server handles API calls from the localhop Android app
+ * The backend server for Local Hop
  */
 
 "use strict";
@@ -27,7 +27,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', function(req, res, next) {
 	res.type('json'); // This server returns only JSON requests
 });
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Utility functions
