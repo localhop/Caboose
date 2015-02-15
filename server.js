@@ -13,7 +13,7 @@ if (process.argv.length < 5) {
 
 var express    = require('express'),
     mysql      = require('mysql'),
-    bodyParser = require('body-parser'); // for POST 
+    bodyParser = require('body-parser'), // for POST 
     app        = express(),
     connpool = mysql.createPool({
     	host : 'localhost',
