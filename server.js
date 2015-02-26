@@ -104,7 +104,7 @@ app.get('/get/event/users/:eventid/:attendStatus', function(req, res) {
     } else {
       var query = "call getEventUsers(?,?);";
       var args = [req.params.eventid, req.params.attendStatus];
-      conn.query(query, args, function(err, rows, fields) {
+      conn.query(query, args, function(err, rows) {
         conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
@@ -129,7 +129,7 @@ app.get('/get/user/events/:userid', function(req, res) {
     } else {
       var args = [req.params.userid];
       var query = "call getUserEvents(?);";
-      conn.query(query, args, function(err, rows, fields) {
+      conn.query(query, args, function(err, rows) {
       	conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
@@ -150,7 +150,29 @@ app.get('/get/user/event/favorites/:userid', function(req, res) {
     } else {
       var args = [req.params.userid];
       var query = "call getUserEventFavorites(?);";
-      conn.query(query, args, function(err, rows, fields) {
+      conn.query(query, args, function(err, rows) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
+});
+
+app.get('/get/user/by/phonenumber/:phoneNumber', function(req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      console.log(req.params);
+      var args = req.params.phoneNumber;
+      var query = "call getUserByPhoneNumber(?);";
+      conn.query(query, args, function(err, rows) {
         conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);

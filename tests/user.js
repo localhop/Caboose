@@ -13,6 +13,11 @@ function callback(error, response, body) {
 
 /** Get a user's events */
 var userid = 3;
-request.get(host+"get/user/events/"+userid, callback);
+//request.get(host+"get/user/events/"+userid, callback);
 
 /** Get a user's favorited events */
+//request.get(host+"get/user/event/favorites/"+userid, callback);
+
+/** Get a user using their phone number */
+var phoneNumber = "19132540937";
+request.get(host+"get/user/by/phonenumber/"+phoneNumber, callback);
