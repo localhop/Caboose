@@ -22,10 +22,6 @@ var testEvent = {
     userid: "1"};
 request.post(host+"create/event", callback).form(testEvent);
 
-/** Get a user's events */
-var userid = 3;
-request.get(host+"get/user/events/"+userid, callback);
-
 /** Get all users attending an event with an attend status of 1 */
 for (var eventid = 0; eventid<=9; eventid++) {
   request.get(host+"get/event/users/"+eventid+"/1", callback);
