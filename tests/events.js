@@ -19,5 +19,8 @@ var testEvent = {
     start: "2015-03-01",
     end: "2015-03-02",
     userid: "1"};
-
 request.post(localhost+"create/event", callback).form(testEvent);
+
+/** Get a user's events */
+var userid = 3;
+request.get(localhost+"get/user/events/"+userid, callback);
