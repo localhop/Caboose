@@ -143,6 +143,27 @@ app.get('/get/user/events/:userid', function(req, res) {
   });
 });
 
+app.get('/get/user/event/favorites/:userid', function(req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.params.userid];
+      var query = "call getUserEventFavorites(?);";
+      conn.query(query, args, function(err, rows, fields) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
+});
+
 
 /** Groups */
 
