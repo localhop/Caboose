@@ -14,12 +14,13 @@ if (process.argv.length < 5) {
 var express    = require('express'),
     mysql      = require('mysql'),
     bodyParser = require('body-parser'), // for POST 
+    _          = require('underscore'),
     app        = express(),
     connpool = mysql.createPool({
-    	host : 'localhost',
-    	user : process.argv[2],
-    	password : process.argv[3],
-    	database : process.argv[4]
+    	host : process.argv[2],
+    	user : process.argv[3],
+    	password : process.argv[4],
+    	database : process.argv[5]
     });
 
 app.set('port', 3000);
@@ -45,12 +46,14 @@ function _debug(m) { console.log('> debug: ', m); }
 function handleMysqlConnErr(err, res) {
   _error(err);
   res.statusCode = 503;
+  res.type('json');
   res.send({text: '', error: err});
 }
 
 function handleMysqlQueryErr(err, res) {
   _error(err);
   res.statusCode = 500;
+  res.type('json');
   res.send({text: '', error: err});
 }
 
@@ -63,9 +66,31 @@ app.get('/', function(req, res){
 	res.sendFile(__dirname + "/index.html")
 });
 
-app.get('/:nodeTest.js', function (req, res) {
-    res.status(200);
-    res.sendFile(__dirname + "/nodeTest.js")
+app.post('/create/event/', function (req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.body.name, 
+                  req.body.description, 
+                  req.body.location, 
+                  req.body.inviteSetting, 
+                  req.body.start, 
+                  req.body.end, 
+                  req.body.userid]; 
+      var query = "call createEvent(?,?,?,?,?,?,?);";
+      conn.query(query, args, function (err, rows) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
 });
 
 app.get('/get/user/events/:userid', function(req, res) {
@@ -73,13 +98,15 @@ app.get('/get/user/events/:userid', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var qstr = "call getUserEvents(?);";
+      var query = "call getUserEvents(?);";
       var args = [req.params.userid];
-      conn.query(qstr, args, function(err, rows, fields) {
+      conn.query(query, args, function(err, rows, fields) {
       	conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
+          res.status = 200;
+          res.type('json');
 	        res.send({text: rows[0], error: ''});
 	      }
       });
@@ -92,13 +119,15 @@ app.get('/create/user/group/:userid/:group', function (req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var qstr = "call createUserGroup(?,?);";
+      var query = "call createUserGroup(?,?);";
       var args = [req.params.userid, req.params.group];
-      conn.query(qstr, args, function(err, rows, fields) {
+      conn.query(query, args, function(err, rows, fields) {
       	conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
+          res.status = 200;
+          res.type('json');
 	        res.send({text: rows[0], error: ''});
 	      }
       });
@@ -106,4 +135,27 @@ app.get('/create/user/group/:userid/:group', function (req, res) {
   });
 });
 
+app.get('/add/group/user/:groupid/:userid', function (req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var query = "call addGroupUser(?,?);";
+      var args = [req.params.groupid, req.params.userid];
+      conn.query(query, args, function (err, rows, fields) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
+});
+
+
 app.listen(app.get('port'));
+console.log("Server listening on port "+app.get('port')+"...");
