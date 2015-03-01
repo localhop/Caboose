@@ -11,13 +11,24 @@ function callback(error, response, body) {
   }
 }
 
+/** Create a user */
+var testUser = {
+	email:"donttestmeeveragin@mailinator.com",
+	password:"testpass",
+	phoneNumber:"1334217850",
+	firstName:"Untestinger",
+	lastName:"User",
+    profileImageURL:"http://localhop.com/images/user/default-profile.jpg"};
+request.post(host+"create/user", callback).form(testUser);
+
+
 /** Get a user's events */
 var userid = 3;
-//request.get(host+"get/user/events/"+userid, callback);
+request.get(host+"get/user/events/"+userid, callback);
 
 /** Get a user's favorited events */
 //request.get(host+"get/user/event/favorites/"+userid, callback);
 
 /** Get a user using their phone number */
 var phoneNumber = "19132540937";
-request.get(host+"get/user/by/phonenumber/"+phoneNumber, callback);
+//request.get(host+"get/user/by/phonenumber/"+phoneNumber, callback);

@@ -90,7 +90,7 @@ app.post('/create/event/', function (req, res) {
         } else {
           res.status = 200;
           res.type('json');
-          res.send({text: rows[0], error: ''});
+          res.send({text: 'success', error: ''});
         }
       });
     }
@@ -121,7 +121,7 @@ app.get('/get/event/users/:eventid/:attendStatus', function(req, res) {
 
 /** Users */
 
-app.post('/add/user/', function(req, res) {
+app.post('/create/user/', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -132,15 +132,16 @@ app.post('/add/user/', function(req, res) {
       			  req.body.firstName,
       			  req.body.lastName,
       			  req.body.profileImageURL];
-      var query = "call addUser(?);";
+      var query = "call addUser(?,?,?,?,?,?);";
       conn.query(query, args, function(err, rows) {
       	conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
+          console.log(rows);
           res.status = 200;
           res.type('json');
-	        res.send({text: rows[0], error: ''});
+	        res.send({text: 'success', error: ''});
 	      }
       });
     }
