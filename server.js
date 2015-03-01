@@ -121,6 +121,31 @@ app.get('/get/event/users/:eventid/:attendStatus', function(req, res) {
 
 /** Users */
 
+app.post('/add/user/', function(req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.body.email,
+      			  req.body.password,
+      			  req.body.phoneNumber,
+      			  req.body.firstName,
+      			  req.body.lastName,
+      			  req.body.profileImageURL];
+      var query = "call addUser(?);";
+      conn.query(query, args, function(err, rows) {
+      	conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+	        res.send({text: rows[0], error: ''});
+	      }
+      });
+    }
+  });
+});
 
 app.get('/get/user/events/:userid', function(req, res) {
   connpool.getConnection(function (err, conn) {
