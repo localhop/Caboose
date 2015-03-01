@@ -45,14 +45,14 @@ function _debug(m) { console.log('> debug: ', m); }
 
 function handleMysqlConnErr(err, res) {
   _error(err);
-  res.statusCode = 503;
+  res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
 }
 
 function handleMysqlQueryErr(err, res) {
   _error(err);
-  res.statusCode = 500;
+  res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
 }
