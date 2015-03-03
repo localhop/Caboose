@@ -70,7 +70,7 @@ app.get('/', function(req, res){
 /** Events */
 
 
-app.post('/create/event/', function (req, res) {
+app.post('/add/event/', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -82,7 +82,7 @@ app.post('/create/event/', function (req, res) {
                   req.body.start, 
                   req.body.end, 
                   req.body.userid]; 
-      var query = "call createEvent(?,?,?,?,?,?,?);";
+      var query = "call addEvent(?,?,?,?,?,?,?);";
       conn.query(query, args, function (err, rows) {
         conn.release();
         if (err) {
@@ -121,7 +121,7 @@ app.get('/get/event/users/:eventid/:attendStatus', function(req, res) {
 
 /** Users */
 
-app.post('/create/user/', function(req, res) {
+app.post('/add/user/', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -216,7 +216,7 @@ app.get('/get/user/by/phonenumber/:phoneNumber', function(req, res) {
 /** Groups */
 
 
-app.get('/create/user/group/:userid/:group', function (req, res) {
+app.get('/add/user/group/:userid/:group', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
