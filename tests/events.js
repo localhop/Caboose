@@ -20,7 +20,7 @@ var testEvent = {
     start: "2015-03-01",
     end: "2015-03-02",
     userid: "1"};
-request.post(host+"create/event", callback).form(testEvent);
+request.post(host+"add/event", callback).form(testEvent);
 
 /** Get all users attending an event with an attend status of 1 */
 for (var eventid = 0; eventid<=9; eventid++) {

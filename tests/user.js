@@ -19,7 +19,7 @@ var testUser = {
 	firstName:"Untestinger",
 	lastName:"User",
     profileImageURL:"http://localhop.com/images/user/default-profile.jpg"};
-request.post(host+"create/user", callback).form(testUser);
+request.post(host+"add/user", callback).form(testUser);
 
 
 /** Get a user's events */
