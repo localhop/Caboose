@@ -24,7 +24,7 @@ request.post(host+"create/user", callback).form(testUser);
 
 /** Get a user's events */
 var userid = 3;
-request.get(host+"get/user/events/"+userid, callback);
+//request.get(host+"get/user/events/"+userid, callback);
 
 /** Get a user's favorited events */
 //request.get(host+"get/user/event/favorites/"+userid, callback);
