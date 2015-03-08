@@ -214,7 +214,7 @@ app.get('/user/event/favorites/:userID', function(req, res) {
   });
 });
 
-app.get('/get/user/by/phonenumber/:phoneNumber', function(req, res) {
+app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -240,7 +240,7 @@ app.get('/get/user/by/phonenumber/:phoneNumber', function(req, res) {
 /** Groups */
 
 
-app.post('/add/user/group/:userID/:group', function (req, res) {
+app.post('/user/add/group/:userID/:group', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -261,7 +261,7 @@ app.post('/add/user/group/:userID/:group', function (req, res) {
   });
 });
 
-app.get('/get/user/groups/:userID', function (req, res) {
+app.get('/user/groups/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -282,7 +282,7 @@ app.get('/get/user/groups/:userID', function (req, res) {
   });
 });
 
-app.get('/get/group/users/:groupID', function (req, res) {
+app.get('/group/users/:groupID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -303,7 +303,7 @@ app.get('/get/group/users/:groupID', function (req, res) {
   });
 });
 
-app.post('/add/group/user/:groupID/:userID', function (req, res) {
+app.post('/group/add/user/:groupID/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
