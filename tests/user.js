@@ -18,13 +18,18 @@ var testUser = {
 	phoneNumber:"1334217850",
 	firstName:"Untestinger",
 	lastName:"User",
-    profileImageURL:"http://localhop.com/images/user/default-profile.jpg"};
-request.post(host+"add/user", callback).form(testUser);
+  profileImageURL:"http://localhop.com/images/user/default-profile.jpg"};
+//request.post(host+"add/user", callback).form(testUser);
 
+var loginTestUser = {
+  password: "fakepass",
+  phoneNumber: "19132540937"
+};
+request.post(host+"user/login/", callback).form(loginTestUser);
 
 /** Get a user's events */
-var userid = 3;
-//request.get(host+"get/user/events/"+userid, callback);
+// var userid = 3;
+// request.get(host+"get/user/events/"+userid, callback);
 
 /** Get a user's favorited events */
 //request.get(host+"get/user/event/favorites/"+userid, callback);
