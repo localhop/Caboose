@@ -56,7 +56,6 @@ function handleMysqlQueryErr(err, res) {
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// Server paths
 ///////////////////////////////////////////////////////////////////////////////
@@ -171,7 +170,6 @@ app.post('/user/add/', function(req, res) {
     }
   });
 });
-
 
 app.get('/user/events/:userID', function(req, res) {
   connpool.getConnection(function (err, conn) {
