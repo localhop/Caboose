@@ -20,7 +20,8 @@ var express    = require('express'),
       host : process.argv[2],
       user : process.argv[3],
       password : process.argv[4],
-      database : process.argv[5]
+      database : process.argv[5],
+      timezone : 'utc'
     });
 
 app.set('port', 3000);
