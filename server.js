@@ -235,17 +235,13 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
   });
 });
 
-
-/** Groups */
-
-
-app.post('/user/add/group/:userID/:group', function (req, res) {
+app.get('/user/groups/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.userID, req.body.group];
-      var query = "call addUserGroup(?,?);";
+      var args = [req.params.userID];
+      var query = "call getUserGroups(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
         if (err) {
@@ -260,13 +256,16 @@ app.post('/user/add/group/:userID/:group', function (req, res) {
   });
 });
 
-app.get('/user/groups/:userID', function (req, res) {
+/** Groups */
+
+
+app.post('/user/add/group/:userID/:group', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.userID];
-      var query = "call getUserGroups(?);";
+      var args = [req.body.userID, req.body.group];
+      var query = "call addUserGroup(?,?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
         if (err) {
