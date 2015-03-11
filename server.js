@@ -256,6 +256,27 @@ app.get('/user/groups/:userID', function (req, res) {
   });
 });
 
+app.get('/user/friends/:userID', function (req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.params.userID];
+      var query = "call getUserActiveFriendIds(?);";
+      conn.query(query, args, function(err, rows, fields) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
+});
+
 /** Groups */
 
 
@@ -266,6 +287,27 @@ app.post('/user/add/group/:userID/:group', function (req, res) {
     } else {
       var args = [req.body.userID, req.body.group];
       var query = "call addUserGroup(?,?);";
+      conn.query(query, args, function(err, rows, fields) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          res.status = 200;
+          res.type('json');
+          res.send({text: rows[0], error: ''});
+        }
+      });
+    }
+  });
+});
+
+app.get('/user/groups/:userID', function (req, res) {
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.params.groupID];
+      var query = "call getUserGroups(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
         if (err) {
