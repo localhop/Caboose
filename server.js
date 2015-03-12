@@ -6,7 +6,7 @@
 
 "use strict";
 
-if (process.argv.length < 5) {
+if (process.argv.length < 6) {
   console.log("server.js <host> <username> <password> <database>");
   process.exit(1);
 }
