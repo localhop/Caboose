@@ -262,7 +262,7 @@ app.get('/user/friends/:userID', function (req, res) {
       handleMysqlConnErr(err, res);
     } else {
       var args = [req.params.userID];
-      var query = "call getUserActiveFriendIds(?);";
+      var query = "call getUserFriends(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
         if (err) {
