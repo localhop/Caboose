@@ -1,5 +1,5 @@
 {
-  "name": "caboose",
+  "name": "localbooty",
   "version": "0.0.1",
   "description": "The backend server for LocalHop",
   "author": "Kendal Harland <kendaljharland@gmail.com>",
@@ -11,10 +11,10 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url" : "https://github.com/localhop/Caboose.git"
+    "url" : "https://github.com/localhop/localbooty.git"
   },
   "bugs": {
-    "url" : "https://github.com/localhop/Caboose/issues"
+    "url" : "https://github.com/localhop/localbooty/issues"
   },
   "keywords": [],
   "dependencies": {
