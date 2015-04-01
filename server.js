@@ -236,6 +236,8 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
 });
 
 app.get('/user/groups/:userID', function (req, res) {
+  var groups = {};
+  
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -247,9 +249,28 @@ app.get('/user/groups/:userID', function (req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
+          var results = rows[0];
+
+          for (var i in results) {
+            var row = results[i];
+            if (groups[row['group_id']]) {
+              groups[row['group_id']]['members'].push({
+                'id' : row['user_id'],
+                'name_first' : row['name_first'],
+                'name_last' : row['name_last']
+              });
+            }
+            else {
+              groups[row['group_id']] = {
+                'name' : row['name'],
+                'members' : []
+              };
+            }
+          }
+
           res.status = 200;
           res.type('json');
-          res.send({text: rows[0], error: ''});
+          res.send({text: groups, error: ''});
         }
       });
     }
