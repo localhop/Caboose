@@ -300,7 +300,6 @@ app.get('/user/groups/:userID', function (req, res) {
               };
             }
           }
-
           res.status = 200;
           res.type('json');
           res.send({text: groups, error: ''});
