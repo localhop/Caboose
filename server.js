@@ -93,7 +93,7 @@ app.post('/event/add', function (req, res) {
                   req.body.inviteSetting, 
                   req.body.start, 
                   req.body.end, 
-                  req.body.userId];
+                  req.body.userID];
       var query = "call addEvent(?,?,?,?,?,?,?);";
       conn.query(query, args, function (err, rows) {
         conn.release();
@@ -109,13 +109,13 @@ app.post('/event/add', function (req, res) {
   });
 });
 
-app.get('/event/users/:eventId/:attendStatus', function(req, res) {
+app.get('/event/users/:eventID/:attendStatus', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
       var query = "call getEventUsers(?,?);";
-      var args = [req.params.eventId, req.params.attendStatus];
+      var args = [req.params.eventID, req.params.attendStatus];
       conn.query(query, args, function(err, rows) {
         conn.release();
         if (err) {
@@ -162,7 +162,7 @@ app.post('/user/location', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.userId, req.body.latitude, req.body.longitude];
+      var args = [req.body.userID, req.body.latitude, req.body.longitude];
       var query = "call setUserLocation(?,?,?);";
       conn.query(query, args, function(err, rows) {
         conn.release();
@@ -206,12 +206,12 @@ app.post('/user/add', function(req, res) {
   });
 });
 
-app.get('/user/events/:userId', function(req, res) {
+app.get('/user/events/:userID', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.userId];
+      var args = [req.params.userID];
       var query = "call getUserEvents(?);";
       conn.query(query, args, function(err, rows) {
         conn.release();
@@ -227,12 +227,12 @@ app.get('/user/events/:userId', function(req, res) {
   });
 });
 
-app.get('/user/event/favorites/:userId', function(req, res) {
+app.get('/user/event/favorites/:userID', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.userId];
+      var args = [req.params.userID];
       var query = "call getUserEventFavorites(?);";
       conn.query(query, args, function(err, rows) {
         conn.release();
@@ -270,12 +270,12 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
   });
 });
 
-app.get('/user/groups/:userId', function (req, res) {
+app.get('/user/groups/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.userId];
+      var args = [req.params.userID];
       var query = "call getUserGroups(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -310,12 +310,12 @@ app.get('/user/groups/:userId', function (req, res) {
   });
 });
 
-app.get('/user/friends/:userId', function (req, res) {
+app.get('/user/friends/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.userId];
+      var args = [req.params.userID];
       var query = "call getUserFriends(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -335,12 +335,12 @@ app.get('/user/friends/:userId', function (req, res) {
 /** Groups */
 
 
-app.post('/user/add/group/:userId/:group', function (req, res) {
+app.post('/user/add/group/:userID/:group', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.userId, req.body.group];
+      var args = [req.body.userID, req.body.group];
       var query = "call addUserGroup(?,?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -356,12 +356,12 @@ app.post('/user/add/group/:userId/:group', function (req, res) {
   });
 });
 
-app.get('/user/groups/:userId', function (req, res) {
+app.get('/user/groups/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.groupId];
+      var args = [req.params.userID];
       var query = "call getUserGroups(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -377,12 +377,12 @@ app.get('/user/groups/:userId', function (req, res) {
   });
 });
 
-app.get('/group/users/:groupId', function (req, res) {
+app.get('/group/users/:groupID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.groupId];
+      var args = [req.params.groupID];
       var query = "call getGroupUsers(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -398,12 +398,12 @@ app.get('/group/users/:groupId', function (req, res) {
   });
 });
 
-app.post('/group/add/user/:groupId/:userId', function (req, res) {
+app.post('/group/add/user/:groupID/:userID', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.groupId, req.body.userId];
+      var args = [req.body.groupID, req.body.userID];
       var query = "call addGroupUser(?,?);";
       conn.query(query, args, function (err, rows, fields) {
         conn.release();
