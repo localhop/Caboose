@@ -9,6 +9,7 @@ function callback(error, response, body) {
   } else {
     console.log(error);
   }
+  console.log();
 }
 
 // /** Create a user */
@@ -21,25 +22,26 @@ function callback(error, response, body) {
 //   profileImageURL:"http://localhop.com/images/user/default-profile.jpg"};
 // //request.post(host+"/add/user", callback).form(testUser);
 
-// var loginTestUser = {
+// var kendal = {
 //   password: "fakepass",
 //   phoneNumber: "19132540937"
 // };
-// request.post(host+"/user/login/", callback).form(loginTestUser);
 
-// /** Get a user's events */
-// var userid = 3;
-// request.get(host+"/get/user/events/"+userid, callback);
+// request.post(host+"/user/login", callback).form(kendal);
 
-// /** Get a user's favorited events */
+// // Get a user's events
+// var userid = 1;
+// request.get(host+"/user/events/"+userid, callback);
+
+// // Get a user's favorited events
 // request.get(host+"/get/user/event/favorites/"+userid, callback);
 
-// /** Get a user using their phone number */
+// // Get a user using their phone number
 // var phoneNumber = "19132540937";
 // request.get(host+"/get/user/by/phonenumber/"+phoneNumber, callback);
 
 request.post(host+"/user/location/", callback).form({
-  userId: 1,
-  latitude: "40.689060",
-  longitude: "-74.044636"
+  userID: 1,
+  latitude: "67.689060",
+  longitude: "-67.044636"
 });

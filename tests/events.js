@@ -13,8 +13,8 @@ function callback(error, response, body) {
 
 /** Create Event */
 var testEvent = {
-    name: "TestEventFromKendalYay",
-    description: "This is a test event",
+    name: "Big Bubba's Barbecue Bash",
+    description: "Barbecue bash at big Bubba's. You better be barbecuing baby back ribs!",
     location: "1603 West 15th Street. Jayhawker Towers Apt. A Room 211",
     inviteSetting: '1',
     start: "2015-03-9",
@@ -24,7 +24,6 @@ request.post(host+"event/add", callback).form(testEvent);
 
 /** Get all users attending an event with an attend status of 1 */
 for (var eventid = 1; eventid<=9; eventid++) {
-  console.log(eventid);
+  console.log("requesting users for event ", eventid);
   request.get(host+"event/users/"+eventid+"/1", callback);
-  console.log("next");
 }
