@@ -16,6 +16,7 @@ var express    = require('express'),
     bodyParser = require('body-parser'), // for POST 
     _          = require('underscore'),
     app        = express(),
+    colors     = require('colors'),
     connpool = mysql.createPool({
       host : process.argv[2],
       user : process.argv[3],
@@ -28,28 +29,39 @@ app.set('port', 3000);
 app.use(bodyParser.urlencoded({ extended: false }));
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Utility functions
+/// Debug utility functions
 ///////////////////////////////////////////////////////////////////////////////
 
-function _error(e) { console.error('x error:', e); }
+function error(e) { 
+  console.error('ERROR:'.bgRed.black, e); 
+}
 
-function _warning(w) { console.error('! warning:', w); }
+function warning(w) { 
+  console.error('WARNING:'.bgYellow.black, w); 
+}
 
-function _debug(m) { console.log('> debug: ', m); }
+function debug(d) { 
+  console.log('DEBUG:'.bgBlue.black, d); 
+}
+
+function log(msg) { 
+  console.log(msg); 
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
 ///////////////////////////////////////////////////////////////////////////////
 
 function handleMysqlConnErr(err, res) {
-  _error(err);
+  error(err);
   res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
 }
 
 function handleMysqlQueryErr(err, res) {
-  _error(err);
+  error(err);
   res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
@@ -135,10 +147,10 @@ app.post('/user/login', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          console.log(rows);
+          debug(rows[0][0]);
           res.status = 200;
           res.type('json');
-          res.send({text: rows[0], error: ''});
+          res.send({text: rows[0][0], error: ''});
         }
       });
     }
@@ -157,7 +169,7 @@ app.post('/user/location', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          console.log(rows);
+          debug(rows);
           res.status = 200;
           res.type('json');
           res.send({text: 'success', error: ''});
@@ -184,7 +196,7 @@ app.post('/user/add', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          console.log(rows);
+          debug(rows);
           res.status = 200;
           res.type('json');
           res.send({text: 'success', error: ''});
@@ -241,7 +253,7 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      console.log(req.params);
+      debug(req.params);
       var args = req.params.phoneNumber;
       var query = "call getUserByPhoneNumber(?);";
       conn.query(query, args, function(err, rows) {
@@ -409,4 +421,4 @@ app.post('/group/add/user/:groupId/:userId', function (req, res) {
 
 
 app.listen(app.get('port'));
-console.log("Server listening on port "+app.get('port')+"...");
+log("Server listening on port "+app.get('port')+"...");
