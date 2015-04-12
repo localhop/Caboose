@@ -32,22 +32,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 /// Debug utility functions
 ///////////////////////////////////////////////////////////////////////////////
 
-function error(e) { 
-  console.error('ERROR:'.bgRed.black, e); 
+function _join_args(args) {
+  var message = "";
+  for (var msg in args)
+    message += args[msg];
+  return message;
 }
 
-function warning(w) { 
-  console.error('WARNING:'.bgYellow.black, w); 
+function error() { 
+  console.error('ERROR:'.bgRed.black, _join_args(arguments));
 }
 
-function debug(d) { 
-  console.log('DEBUG:'.bgBlue.black, d); 
+function warning() { 
+  console.error('WARNING:'.bgYellow.black, _join_args(arguments));
 }
 
-function log(msg) { 
-  console.log(msg); 
+function debug() { 
+  console.log('DEBUG:'.bgBlue.black, _join_args(arguments));
 }
 
+function log() { 
+  console.log.apply(console.log, arguments);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
@@ -77,37 +83,46 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + "/index.html")
 });
 
-
-/** Events */
-
-
-// add parameters for latitude and longitude.
-app.post('/event/add', function (req, res) {
-  connpool.getConnection(function (err, conn) {
+/// Run a database query triggered by an HTTP request
+/// [query] - is the MySQL query to run
+/// [args] - is the array of arguments to pass to [query]
+/// [req] - is the express req object
+/// [res] - is the express res object
+/// [callback] - is the function to call when the MySQL query has successfully
+///   returned.
+function RunDatabaseRequest(query, args, req, res, callback) {
+  log("ROUTE: " + req._parsedUrl.path);
+  connpool.getConnection(function(err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.name, 
-                  req.body.description, 
-                  req.body.location,
-                  req.body.inviteSetting, 
-                  req.body.start, 
-                  req.body.end, 
-                  req.body.userID];
-      var query = "call addEvent(?,?,?,?,?,?,?);";
-      conn.query(query, args, function (err, rows) {
+      conn.query(query, args, function(err, response) {
         conn.release();
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          res.status = 200;
+          res.status(200);
           res.type('json');
-          res.send({text: rows['affectedRows'], error: ''});
+          callback(response);
         }
       });
     }
   });
+}
+
+
+app.post('/event/add', function (req, res) {
+  var query = "call addEvent(?,?,?,?,?,?,?);";
+  var args = [req.body.name, req.body.description, req.body.location,
+    req.body.inviteSetting, req.body.start, req.body.end, req.body.userID];
+  RunDatabaseRequest(query, args, req, res, function (rows) {
+    res.send({text: rows['affectedRows'], error: ''});
+  });
 });
+
+
+/** Events */
+
 
 app.get('/event/users/:eventID/:attendStatus', function(req, res) {
   connpool.getConnection(function (err, conn) {
