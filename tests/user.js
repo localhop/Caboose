@@ -40,6 +40,6 @@ function callback(error, response, body) {
 
 request.post(host+"/user/location/", callback).form({
   userId: 1,
-  latitude: "+40.689060",
+  latitude: "40.689060",
   longitude: "-74.044636"
 });
