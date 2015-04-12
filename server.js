@@ -69,6 +69,7 @@ app.get('/', function(req, res){
 /** Events */
 
 
+// add parameters for latitude and longitude.
 app.post('/event/add', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
@@ -76,7 +77,7 @@ app.post('/event/add', function (req, res) {
     } else {
       var args = [req.body.name, 
                   req.body.description, 
-                  req.body.location, 
+                  req.body.location,
                   req.body.inviteSetting, 
                   req.body.start, 
                   req.body.end, 
