@@ -39,21 +39,19 @@ function _join_args(args) {
   return message;
 }
 
-function error() { 
-  console.error('ERROR:'.bgRed.black, _join_args(arguments));
+function error(messages) { 
+  console.error('ERROR:'.bgRed.black, messages);
 }
 
-function warning() { 
-  console.error('WARNING:'.bgYellow.black, _join_args(arguments));
+function warning(messages) { 
+  console.error('WARNING:'.bgYellow.black, messages);
 }
 
-function debug() { 
-  console.log('DEBUG:'.bgBlue.black, _join_args(arguments));
+function debug(messages) {
+  console.log('DEBUG:'.bgBlue.black, messages);
 }
 
-function log() { 
-  console.log.apply(console.log, arguments);
-}
+var log = console.log;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
@@ -91,7 +89,7 @@ app.get('/', function(req, res){
 /// [callback] - is the function to call when the MySQL query has successfully
 ///   returned.
 function RunDatabaseRequest(query, args, req, res, callback) {
-  log("ROUTE: " + req._parsedUrl.path);
+  log('ROUTE:'.bgGreen.black, req._parsedUrl.path);
   connpool.getConnection(function(err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -111,6 +109,9 @@ function RunDatabaseRequest(query, args, req, res, callback) {
 }
 
 
+/** Events */
+
+
 app.post('/event/add', function (req, res) {
   var query = "call addEvent(?,?,?,?,?,?,?);";
   var args = [req.body.name, req.body.description, req.body.location,
@@ -121,27 +122,11 @@ app.post('/event/add', function (req, res) {
 });
 
 
-/** Events */
-
-
 app.get('/event/users/:eventID/:attendStatus', function(req, res) {
-  connpool.getConnection(function (err, conn) {
-    if (err) {
-      handleMysqlConnErr(err, res);
-    } else {
-      var query = "call getEventUsers(?,?);";
-      var args = [req.params.eventID, req.params.attendStatus];
-      conn.query(query, args, function(err, rows) {
-        conn.release();
-        if (err) {
-          handleMysqlQueryErr(err, res);
-        } else {
-          res.status = 200;
-          res.type('json');
-          res.send({text: rows[0], error: ''});
-        }
-      });
-    }
+  var query = "call getEventUsers(?,?);";
+  var args = [req.params.eventID, req.params.attendStatus];
+  RunDatabaseRequest(query, args, req, res, function (rows) {
+    res.send({text: rows[0], error: ''});
   });
 });
 
@@ -150,49 +135,23 @@ app.get('/event/users/:eventID/:attendStatus', function(req, res) {
 
 
 app.post('/user/login', function(req, res) {
-  connpool.getConnection(function (err, conn) {
-    if (err) {
-      handleMysqlConnErr(err, res);
-    } else {
-      var args = [req.body.phoneNumber,
-                  req.body.password];
-      var query = "call getUserByAuthenticationKeys(?,?);";
-      conn.query(query, args, function(err, rows) {
-        conn.release();
-        if (err) {
-          handleMysqlQueryErr(err, res);
-        } else {
-          debug(rows[0][0]);
-          res.status = 200;
-          res.type('json');
-          res.send({text: rows[0][0], error: ''});
-        }
-      });
-    }
+  var query = "call getUserByAuthenticationKeys(?,?);";
+  var args = [req.body.phoneNumber, req.body.password];
+  RunDatabaseRequest(query, args, req, res, function (rows) {
+    res.send({text: rows[0][0], error: ''});
   });
 });
 
+
 app.post('/user/location', function(req, res) {
-  connpool.getConnection(function (err, conn) {
-    if (err) {
-      handleMysqlConnErr(err, res);
-    } else {
-      var args = [req.body.userID, req.body.latitude, req.body.longitude];
-      var query = "call setUserLocation(?,?,?);";
-      conn.query(query, args, function(err, rows) {
-        conn.release();
-        if (err) {
-          handleMysqlQueryErr(err, res);
-        } else {
-          debug(rows);
-          res.status = 200;
-          res.type('json');
-          res.send({text: 'success', error: ''});
-        }
-      });
-    }
-  });  
+  var query = "call setUserLocation(?,?,?);";
+  var args = [req.body.userID, req.body.latitude, req.body.longitude];
+  debug(args);
+  RunDatabaseRequest(query, args, req, res, function (rows) {
+    res.send({text: rows['affectedRows'], error: ''});
+  });
 });
+
 
 app.post('/user/add', function(req, res) {
   connpool.getConnection(function (err, conn) {
@@ -211,7 +170,6 @@ app.post('/user/add', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          debug(rows);
           res.status = 200;
           res.type('json');
           res.send({text: 'success', error: ''});
