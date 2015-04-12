@@ -158,6 +158,7 @@ app.post('/user/login', function(req, res) {
 });
 
 app.post('/user/location', function(req, res) {
+  debug(req.body);
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
