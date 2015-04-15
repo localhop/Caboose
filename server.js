@@ -253,19 +253,17 @@ app.get('/user/groups/:userID', function (req, res) {
 
           for (var i in results) {
             var row = results[i];
-            if (groups[row['group_id']]) {
-              groups[row['group_id']]['members'].push({
-                'id' : row['user_id'],
-                'name_first' : row['name_first'],
-                'name_last' : row['name_last']
-              });
-            }
-            else {
+            if (!groups[row['group_id']]) {
               groups[row['group_id']] = {
                 'name' : row['name'],
                 'members' : []
               };
             }
+            groups[row['group_id']]['members'].push({
+              'id' : row['user_id'],
+              'name_first' : row['name_first'],
+              'name_last' : row['name_last']
+            });
           }
 
           res.status = 200;
