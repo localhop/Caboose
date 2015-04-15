@@ -283,7 +283,8 @@ app.get('/user/groups/:userID', function (req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          var results = rows[0];
+          var results = rows[0],
+              groups  = {};
 
           for (var i in results) {
             var row = results[i];
