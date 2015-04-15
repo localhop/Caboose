@@ -16,6 +16,7 @@ var express    = require('express'),
     bodyParser = require('body-parser'), // for POST 
     _          = require('underscore'),
     app        = express(),
+    colors     = require('colors'),
     connpool = mysql.createPool({
       host : process.argv[2],
       user : process.argv[3],
@@ -28,28 +29,39 @@ app.set('port', 3000);
 app.use(bodyParser.urlencoded({ extended: false }));
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Utility functions
+/// Debug utility functions
 ///////////////////////////////////////////////////////////////////////////////
 
-function _error(e) { console.error('x error:', e); }
+function error(e) { 
+  console.error('ERROR:'.bgRed.black, e); 
+}
 
-function _warning(w) { console.error('! warning:', w); }
+function warning(w) { 
+  console.error('WARNING:'.bgYellow.black, w); 
+}
 
-function _debug(m) { console.log('> debug: ', m); }
+function debug(d) { 
+  console.log('DEBUG:'.bgBlue.black, d); 
+}
+
+function log(msg) { 
+  console.log(msg); 
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
 ///////////////////////////////////////////////////////////////////////////////
 
 function handleMysqlConnErr(err, res) {
-  _error(err);
+  error(err);
   res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
 }
 
 function handleMysqlQueryErr(err, res) {
-  _error(err);
+  error(err);
   res.statusCode = 200;
   res.type('json');
   res.send({text: '', error: err});
@@ -69,6 +81,7 @@ app.get('/', function(req, res){
 /** Events */
 
 
+// add parameters for latitude and longitude.
 app.post('/event/add', function (req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
@@ -76,7 +89,7 @@ app.post('/event/add', function (req, res) {
     } else {
       var args = [req.body.name, 
                   req.body.description, 
-                  req.body.location, 
+                  req.body.location,
                   req.body.inviteSetting, 
                   req.body.start, 
                   req.body.end, 
@@ -134,17 +147,40 @@ app.post('/user/login', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          console.log(rows);
+          debug(rows[0][0]);
           res.status = 200;
           res.type('json');
-          res.send({text: rows[0], error: ''});
+          res.send({text: rows[0][0], error: ''});
         }
       });
     }
   });
 });
 
-app.post('/user/add/', function(req, res) {
+app.post('/user/location', function(req, res) {
+  debug(req.body);
+  connpool.getConnection(function (err, conn) {
+    if (err) {
+      handleMysqlConnErr(err, res);
+    } else {
+      var args = [req.body.userID, req.body.latitude, req.body.longitude];
+      var query = "call setUserLocation(?,?,?);";
+      conn.query(query, args, function(err, rows) {
+        conn.release();
+        if (err) {
+          handleMysqlQueryErr(err, res);
+        } else {
+          debug(rows);
+          res.status = 200;
+          res.type('json');
+          res.send({text: 'success', error: ''});
+        }
+      });
+    }
+  });  
+});
+
+app.post('/user/add', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -161,7 +197,7 @@ app.post('/user/add/', function(req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          console.log(rows);
+          debug(rows);
           res.status = 200;
           res.type('json');
           res.send({text: 'success', error: ''});
@@ -218,7 +254,7 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      console.log(req.params);
+      debug(req.params);
       var args = req.params.phoneNumber;
       var query = "call getUserByPhoneNumber(?);";
       conn.query(query, args, function(err, rows) {
@@ -236,8 +272,6 @@ app.get('/user/from/phonenumber/:phoneNumber', function(req, res) {
 });
 
 app.get('/user/groups/:userID', function (req, res) {
-  var groups = {};
-  
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
@@ -265,7 +299,6 @@ app.get('/user/groups/:userID', function (req, res) {
               'name_last' : row['name_last']
             });
           }
-
           res.status = 200;
           res.type('json');
           res.send({text: groups, error: ''});
@@ -296,6 +329,7 @@ app.get('/user/friends/:userID', function (req, res) {
   });
 });
 
+
 /** Groups */
 
 
@@ -325,7 +359,7 @@ app.get('/user/groups/:userID', function (req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.params.groupID];
+      var args = [req.params.userID];
       var query = "call getUserGroups(?);";
       conn.query(query, args, function(err, rows, fields) {
         conn.release();
@@ -385,4 +419,4 @@ app.post('/group/add/user/:groupID/:userID', function (req, res) {
 
 
 app.listen(app.get('port'));
-console.log("Server listening on port "+app.get('port')+"...");
+log("Server listening on port "+app.get('port')+"...");
