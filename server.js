@@ -128,8 +128,8 @@ app.post('/event/add', function (req, res) {
 
 
 app.get('/event/users/:eventID/:attendStatus', function(req, res) {
-  var query = "call getEventUsers(?,?);";
-  var args = [req.params.eventID, req.params.attendStatus];
+  var query = "call getEventUsers(?);";
+  var args = [req.params.eventID];
   RunDatabaseRequest(query, args, req, res, function (rows) {
     res.send({text: rows[0], error: ''});
   });
@@ -137,7 +137,6 @@ app.get('/event/users/:eventID/:attendStatus', function(req, res) {
 
 
 /** Users */
-
 
 app.post('/user/login', function(req, res) {
   var query = "call getUserByAuthenticationKeys(?,?);";
@@ -260,25 +259,23 @@ app.get('/user/groups/:userID', function (req, res) {
         if (err) {
           handleMysqlQueryErr(err, res);
         } else {
-          var results = rows[0];
+          var results = rows[0],
+              groups  = {};
 
           for (var i in results) {
             var row = results[i];
-            if (groups[row['group_id']]) {
-              groups[row['group_id']]['members'].push({
-                'id' : row['user_id'],
-                'name_first' : row['name_first'],
-                'name_last' : row['name_last']
-              });
-            }
-            else {
+            if (!groups[row['group_id']]) {
               groups[row['group_id']] = {
                 'name' : row['name'],
                 'members' : []
               };
             }
+            groups[row['group_id']]['members'].push({
+              'id' : row['user_id'],
+              'name_first' : row['name_first'],
+              'name_last' : row['name_last']
+            });
           }
-
           res.status = 200;
           res.type('json');
           res.send({text: groups, error: ''});

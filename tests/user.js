@@ -1,13 +1,14 @@
 var request = require('request');
+var colors = require('colors');
 var localhost  = "http://localhost:3000"
 var remotehost = ""; 
 var host = localhost;
 
 function callback(error, response, body) {
   if (!error  && response.statusCode == 200) {
-    console.log(body);
+    console.log("BODY:".blue, JSON.parse(body).text);
   } else {
-    console.log(error);
+    console.log("ERROR:".red, error);
   }
   console.log();
 }
@@ -27,7 +28,11 @@ function callback(error, response, body) {
 //   phoneNumber: "19132540937"
 // };
 
-// request.post(host+"/user/login", callback).form(kendal);
+/** Get a user's events */
+var eventid = 2;
+var status = 1;
+request.get(host+"/event/users/"+eventid+"/"+status, callback);
+
 
 // // Get a user's events
 // var userid = 1;
@@ -39,9 +44,11 @@ function callback(error, response, body) {
 // // Get a user using their phone number
 // var phoneNumber = "19132540937";
 // request.get(host+"/get/user/by/phonenumber/"+phoneNumber, callback);
-
+/*
 request.post(host+"/user/location/", callback).form({
-  userID: 1,
-  latitude: "67.689060",
-  longitude: "-67.044636"
+  userId: 1,
+  latitude: "40.689060",
+  longitude: "-74.044636"
 });
+*/
+
