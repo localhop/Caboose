@@ -208,6 +208,7 @@ app.post('/user/add', function(req, res) {
 });
 
 app.get('/user/events/:userID', function(req, res) {
+  debug("/user/events/: got: " + req.params);
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);

@@ -1,13 +1,14 @@
 var request = require('request');
+var colors = require('colors');
 var localhost  = "http://localhost:3000"
 var remotehost = ""; 
 var host = localhost;
 
 function callback(error, response, body) {
   if (!error  && response.statusCode == 200) {
-    console.log(body);
+    console.log("BODY:".blue, JSON.parse(body).text);
   } else {
-    console.log(error);
+    console.log("ERROR:".red, error);
   }
 }
 
@@ -27,9 +28,10 @@ function callback(error, response, body) {
 // };
 // request.post(host+"/user/login/", callback).form(loginTestUser);
 
-// /** Get a user's events */
-// var userid = 3;
-// request.get(host+"/get/user/events/"+userid, callback);
+/** Get a user's events */
+var eventid = 2;
+var status = 1;
+request.get(host+"/event/users/"+eventid+"/"+status, callback);
 
 // /** Get a user's favorited events */
 // request.get(host+"/get/user/event/favorites/"+userid, callback);
@@ -37,9 +39,10 @@ function callback(error, response, body) {
 // /** Get a user using their phone number */
 // var phoneNumber = "19132540937";
 // request.get(host+"/get/user/by/phonenumber/"+phoneNumber, callback);
-
+/*
 request.post(host+"/user/location/", callback).form({
   userId: 1,
   latitude: "40.689060",
   longitude: "-74.044636"
 });
+*/
