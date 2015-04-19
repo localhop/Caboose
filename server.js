@@ -127,7 +127,7 @@ app.post('/event/add', function (req, res) {
 });
 
 
-app.get('/event/users/:eventID/:attendStatus', function(req, res) {
+app.get('/event/users/:eventID', function(req, res) {
   var query = "call getEventUsers(?);";
   var args = [req.params.eventID];
   RunDatabaseRequest(query, args, req, res, function (rows) {
