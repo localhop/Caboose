@@ -53,6 +53,10 @@ function debug(messages) {
 
 var log = console.log;
 
+function logRoute(messages) {
+  log('ROUTE:'.bgGreen.black, messages);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Error handlers
 ///////////////////////////////////////////////////////////////////////////////
@@ -77,6 +81,7 @@ function handleMysqlQueryErr(err, res) {
 ///////////////////////////////////////////////////////////////////////////////
 
 app.get('/', function(req, res){
+  log("ROUTE: '/'");
   res.status(200);
   res.sendFile(__dirname + "/index.html")
 });
@@ -89,7 +94,7 @@ app.get('/', function(req, res){
 /// [callback] - is the function to call when the MySQL query has successfully
 ///   returned.
 function RunDatabaseRequest(query, args, req, res, callback) {
-  log('ROUTE:'.bgGreen.black, req._parsedUrl.path);
+  logRoute(req._parsedUrl.path);
   connpool.getConnection(function(err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
