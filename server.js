@@ -109,13 +109,13 @@ app.post('/event/add', function (req, res) {
   });
 });
 
-app.get('/event/users/:eventID/:attendStatus', function(req, res) {
+app.get('/event/users/:eventID', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var query = "call getEventUsers(?,?);";
-      var args = [req.params.eventID, req.params.attendStatus];
+      var query = "call getEventUsers(?);";
+      var args = [req.params.eventID];
       conn.query(query, args, function(err, rows) {
         conn.release();
         if (err) {
