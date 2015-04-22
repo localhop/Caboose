@@ -126,33 +126,11 @@ app.post('/event/add', function (req, res) {
   });
 });
 
-<<<<<<< HEAD
-app.get('/event/users/:eventID', function(req, res) {
-  connpool.getConnection(function (err, conn) {
-    if (err) {
-      handleMysqlConnErr(err, res);
-    } else {
-      var query = "call getEventUsers(?);";
-      var args = [req.params.eventID];
-      conn.query(query, args, function(err, rows) {
-        conn.release();
-        if (err) {
-          handleMysqlQueryErr(err, res);
-        } else {
-          res.status = 200;
-          res.type('json');
-          res.send({text: rows[0], error: ''});
-        }
-      });
-    }
-=======
-
 app.get('/event/users/:eventID', function(req, res) {
   var query = "call getEventUsers(?);";
   var args = [req.params.eventID];
   RunDatabaseRequest(query, args, req, res, function (rows) {
     res.send({text: rows[0], error: ''});
->>>>>>> 587bca937c1aa70ed434b87b2c447304c245c42e
   });
 });
 
