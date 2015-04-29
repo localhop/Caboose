@@ -113,9 +113,7 @@ function RunDatabaseRequest(query, args, req, res, callback) {
   });
 }
 
-
 /** Events */
-
 
 app.post('/event/add', function (req, res) {
   var query = "call addEvent(?,?,?,?,?,?,?);";
@@ -134,13 +132,13 @@ app.get('/event/users/:eventID', function(req, res) {
   });
 });
 
-
 /** Users */
 
 app.post('/user/login', function(req, res) {
   var query = "call getUserByAuthenticationKeys(?,?);";
   var args = [req.body.phoneNumber, req.body.password];
   RunDatabaseRequest(query, args, req, res, function (rows) {
+    debug(rows);
     res.send({text: rows[0][0], error: ''});
   });
 });
