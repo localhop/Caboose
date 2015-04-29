@@ -28,10 +28,14 @@ function callback(error, response, body) {
 //   phoneNumber: "19132540937"
 // };
 
+/** Get a user's location */
+var userID = 2;
+request.get(host+"/user/location/"+userID, callback);
+
 /** Get a user's events */
-var eventid = 2;
-var status = 1;
-request.get(host+"/event/users/"+eventid+"/"+status, callback);
+//var eventid = 2;
+//var status = 1;
+//request.get(host+"/event/users/"+eventid+"/"+status, callback);
 
 
 // // Get a user's events

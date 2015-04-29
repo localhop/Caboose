@@ -149,12 +149,18 @@ app.post('/user/login', function(req, res) {
 app.post('/user/location', function(req, res) {
   var query = "call setUserLocation(?,?,?);";
   var args = [req.body.userID, req.body.latitude, req.body.longitude];
-  debug(args);
   RunDatabaseRequest(query, args, req, res, function (rows) {
     res.send({text: rows['affectedRows'], error: ''});
   });
 });
 
+app.get('/user/location/:userID', function(req, res) {
+  var query = "call getUserLocation(?);";
+  var args = [req.params.userID];
+  RunDatabaseRequest(query, args, req, res, function(rows) {
+    debug(rows[0][0]);
+  });
+});
 
 app.post('/user/add', function(req, res) {
   connpool.getConnection(function (err, conn) {
