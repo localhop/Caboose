@@ -139,7 +139,11 @@ app.post('/user/login', function(req, res) {
   var args = [req.body.phoneNumber, req.body.password];
   RunDatabaseRequest(query, args, req, res, function (rows) {
     debug(rows);
-    res.send({text: rows[0][0], error: ''});
+    if (rows[0].length == 0) {
+      res.send({text: '', error: 'Invalid username/password combination'});  
+    } else {
+      res.send({text: rows[0][0], error: ''});  
+    }
   });
 });
 
