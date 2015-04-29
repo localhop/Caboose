@@ -158,7 +158,7 @@ app.get('/user/location/:userID', function(req, res) {
   var query = "call getUserLocation(?);";
   var args = [req.params.userID];
   RunDatabaseRequest(query, args, req, res, function(rows) {
-    debug(rows[0][0]);
+		res.send(rows[0][0]);
   });
 });
 
