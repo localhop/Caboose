@@ -169,12 +169,12 @@ app.post('/user', function(req, res) {
     if (err) {
       handleMysqlConnErr(err, res);
     } else {
-      var args = [req.body.email,
+      var args = ['testemail@mailinator.com',//req.body.email,
                   req.body.password,
                   req.body.phoneNumber,
                   req.body.firstName,
                   req.body.lastName,
-                  req.body.profileImageURL];
+                  ''//req.body.profileImageURL];
       var query = "call addUser(?,?,?,?,?,?);";
       conn.query(query, args, function(err, rows) {
         conn.release();
