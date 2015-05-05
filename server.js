@@ -164,7 +164,7 @@ app.get('/user/location/:userID', function(req, res) {
   });
 });
 
-app.post('/user/add', function(req, res) {
+app.post('/user', function(req, res) {
   connpool.getConnection(function (err, conn) {
     if (err) {
       handleMysqlConnErr(err, res);
